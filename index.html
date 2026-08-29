@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>دنيا ❤️ من أحمد</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: #0b0a0a;
+      color: #f5e6e6;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+    .app {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      background: radial-gradient(circle at 20% 30%, #1f0f0f, #0a0505);
+      min-height: 100vh;
+      position: relative;
+      box-shadow: 0 0 50px rgba(255, 20, 80, 0.2);
+      overflow: hidden;
+    }
+    /* Floating hearts */
+    .floating-hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .heart-particle {
+      position: absolute;
+      color: #ff4d6d;
+      font-size: 20px;
+      animation: floatUp 8s linear infinite;
+      opacity: 0.5;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) rotate(0deg) scale(0.6); opacity: 0.1; }
+      100% { transform: translateY(-10vh) rotate(720deg) scale(1.2); opacity: 0.9; }
+    }
+
+    /* Main content */
+    #mainContent {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 30px 20px;
+      position: relative;
+      z-index: 5;
+      text-align: center;
+    }
+
+    .welcome-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #ffb3c6;
+      text-shadow: 0 0 40px #ff1a4a, 0 0 80px #ff1a4a;
+      animation: pulseGlow 2s ease-in-out infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { text-shadow: 0 0 40px #ff1a4a, 0 0 80px #ff1a4a; }
+      50% { text-shadow: 0 0 60px #ff4d6d, 0 0 120px #ff4d6d, 0 0 180px #ff1a4a; }
+    }
+
+    .welcome-sub {
+      font-size: 1.8rem;
+      color: #ffb3b3;
+      font-weight: 300;
+      margin-bottom: 15px;
+      text-shadow: 0 0 20px #ff4d6d;
+    }
+
+    .welcome-heart {
+      font-size: 80px;
+      animation: floatHeart 2s ease-in-out infinite;
+      color: #ff3366;
+      text-shadow: 0 0 60px #ff3366;
+      margin: 10px 0;
+    }
+    @keyframes floatHeart {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-20px) scale(1.1); }
+    }
+
+    .open-btn {
+      margin-top: 30px;
+      background: linear-gradient(145deg, #ff1a4a, #cc0033);
+      border: none;
+      padding: 20px 50px;
+      border-radius: 70px;
+      color: #fff;
+      font-size: 1.8rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 0 60px #ff1a4a, 0 0 120px rgba(255, 26, 74, 0.3);
+      transition: all 0.3s;
+      font-family: 'Tajawal', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      animation: pulseBtn 2s ease-in-out infinite;
+    }
+    @keyframes pulseBtn {
+      0%, 100% { box-shadow: 0 0 60px #ff1a4a, 0 0 120px rgba(255, 26, 74, 0.3); }
+      50% { box-shadow: 0 0 80px #ff4d6d, 0 0 160px rgba(255, 26, 74, 0.5); }
+    }
+    .open-btn:active { transform: scale(0.95); }
+
+    /* Hidden content after opening */
+    #hiddenContent {
+      display: none;
+      flex-direction: column;
+      gap: 30px;
+      padding: 20px 16px 80px;
+      width: 100%;
+    }
+    #hiddenContent.active {
+      display: flex;
+    }
+
+    /* Music bar fixed bottom */
+    .music-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto;
+      background: rgba(20,5,10,0.85); backdrop-filter: blur(15px);
+      padding: 10px 16px; display: none; align-items: center; gap: 12px;
+      border-top: 1px solid rgba(255,80,120,0.3); z-index: 100;
+      justify-content: center; flex-wrap: wrap;
+    }
+    .music-bar.show { display: flex; }
+    .music-bar i { font-size: 22px; color: #ff6b8a; cursor: pointer; transition: 0.2s; }
+    .music-bar i:active { transform: scale(0.8); }
+    .music-bar .track-name { font-weight: 700; font-size: 0.9rem; color: #ffb3c6; min-width: 60px; text-align: center; }
+    .music-bar input[type="range"] { width: 80px; accent-color: #ff3366; background: transparent; }
+
+    /* Sections */
+    .section-title { font-size: 2rem; font-weight: 900; color: #ffb3c6; text-shadow: 0 0 30px #ff1a4a; text-align: center; margin: 10px 0; line-height: 1.3; }
+    .sub-title { text-align: center; font-size: 1.2rem; color: #ffb3b3; margin-top: -5px; font-weight: 300; }
+    .glass-card {
+      background: rgba(255,255,255,0.03); backdrop-filter: blur(20px);
+      border-radius: 40px; padding: 24px 18px;
+      border: 1px solid rgba(255,100,130,0.15); box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      transition: 0.3s;
+    }
+    .msg-text { font-size: 1.1rem; line-height: 2; color: #f0d0d0; text-align: center; padding: 5px; font-weight: 300; white-space: pre-wrap; }
+    .typing-effect { opacity: 0; animation: fadeIn 2s forwards; }
+    @keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+
+    .cards-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+    .card-item {
+      background: rgba(255,50,80,0.08); padding: 14px 18px; border-radius: 40px;
+      border-right: 6px solid #ff4d6d; font-size: 1.1rem; font-weight: 400;
+      backdrop-filter: blur(6px); box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: 0.2s;
+    }
+
+    .photo-frame { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    .photo-item {
+      width: 120px; height: 120px; border-radius: 50%; object-fit: cover;
+      border: 4px solid #ff4d6d; box-shadow: 0 0 40px #ff1a4a; transition: 0.4s;
+      background: #2a1212;
+    }
+    .photo-item:active { transform: scale(0.95); }
+    .heart-between { font-size: 40px; color: #ff3366; animation: floatHeart 2s infinite; }
+
+    .secret-btn {
+      background: linear-gradient(145deg, #ff1a4a, #b3002d); border: none;
+      padding: 18px 30px; border-radius: 70px; color: #fff; font-size: 1.5rem;
+      font-weight: 900; width: 100%; box-shadow: 0 0 50px #ff1a4a; transition: 0.2s;
+      font-family: 'Tajawal', sans-serif; display: flex; align-items: center; justify-content: center; gap: 10px;
+      margin: 20px 0;
+    }
+    .secret-btn:active { transform: scale(0.95); }
+    .secret-message {
+      background: rgba(255,20,60,0.15); backdrop-filter: blur(12px);
+      padding: 25px; border-radius: 40px; border: 1px solid #ff4d6d;
+      box-shadow: 0 0 60px #ff1a4a; text-align: center; font-size: 1.2rem;
+      line-height: 2; display: none; margin-top: 15px; font-weight: 400;
+    }
+    .secret-message.show { display: block; animation: popIn 0.6s cubic-bezier(0.175,0.885,0.32,1.275); }
+    @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+    .confetti-heart {
+      position: fixed; pointer-events: none; font-size: 30px; z-index: 999;
+      animation: confettiFall 2s ease-out forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-20px) scale(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) scale(1.5) rotate(720deg); opacity: 0; }
+    }
+    @media (max-width: 420px) { .photo-item { width: 100px; height: 100px; } }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="floating-hearts" id="floatingHearts"></div>
+
+  <!-- MAIN CONTENT -->
+  <div id="mainContent">
+    <!-- Welcome Page -->
+    <div id="welcomePage">
+      <div class="welcome-heart">❤️</div>
+      <div class="welcome-title">افتحي يا حبيبتي</div>
+      <div class="welcome-sub">🌹 دنيا ❤️</div>
+      <div style="font-size:1.2rem; color:#ffb3b3; margin:10px 0 5px;">كل الكلام ده مستنيكي ❤️</div>
+      <button class="open-btn" id="openBtn">
+        <i class="fas fa-heart"></i> افتحي قلبي
+      </button>
+    </div>
+
+    <!-- Hidden Content (after opening) -->
+    <div id="hiddenContent">
+      <div class="section-title" style="font-size:2.4rem;">أهلًا بدنيتي... دنيا ❤️</div>
+      <div class="sub-title">من أحمد... الشخص اللي حب يقولك كلام كتير، بس معرفش يحطه كله في رسالة واحدة.</div>
+      <div class="section-title">دنيا... إنتِ أجمل حاجة حصلتلي ❤️</div>
+
+      <!-- رسالة طويلة -->
+      <div class="glass-card">
+        <div style="text-align:center; font-size:1.8rem; font-weight:900; color:#ffb3c6;">من قلبي ليكي يا دنيا ❤️</div>
+        <div class="msg-text typing-effect">
+          دنيا، أنا مش عارف أبدأ كلامي منين، لأن مهما كتبت ومهما حاولت أوصف اللي جوايا، هفضل حاسس إن الكلام قليل على إحساسي ناحيتك. كلمة بحبك نفسها صغيرة جدًا قدام كل المشاعر اللي ممكن أحسها لما أفكر فيكي.<br><br>
+          إنتِ مش مجرد اسم بشوفه على شاشة، إنتِ بقيتي شخص وجوده بيفرق معايا. رسالة منك ممكن تغير يوم كامل، وضحكة منك ممكن تخليني أنسى حاجة كانت مضايقاني، وكلمة بسيطة منك ممكن تفضل في دماغي وقت طويل.<br><br>
+          بحب تفاصيلك اللي يمكن إنتِ مش واخدة بالك منها. بحب طريقة كلامك، ضحكتك، أسلوبك، اهتمامك، وطريقة تعبيرك عن نفسك. بحب حتى اللحظات اللي مفيهاش كلام، لأن مجرد وجودك له إحساس مختلف.<br><br>
+          يا دنيا، يمكن أنا مش دايمًا بعرف أقول اللي جوايا، وممكن ساعات أسكت أو أتصرف بطريقة تخليكي مش عارفة أنا حاسس بإيه، لكن الحقيقة إنك بتكوني في بالي أكتر مما تتخيلي.<br><br>
+          أنا مش عايزك تكوني شخص تاني، ولا عايزك تغيري نفسك عشان ترضي حد. أنا أحبك زي ما إنتِ، بكل تفاصيلك، بضحكتك، بزعلِك، بفرحتك، وبكل حاجة بتخليكي دنيا.<br><br>
+          ولو الدنيا في يوم تعبتك، أتمنى تفتكري إن في حد اسمه أحمد كان نفسه يشوفك دايمًا بخير، وكان نفسه يفضل سبب في ابتسامتك مش سبب في حزنك.<br><br>
+          يمكن الحياة مش دايمًا هتكون سهلة، ويمكن هنقابل أيام صعبة، لكن أجمل حاجة إننا نفضل فاكرين اللحظات الحلوة ونقدر بعض ونحافظ على الاحترام والحب بينا.<br><br>
+          دنيا، لو في يوم فتحتي الموقع ده بعد وقت طويل، أتمنى تبتسمي لما تفتكري إن أحمد قعد وقت وكتب كل الكلام ده مخصوص عشانك.
+        </div>
+      </div>
+
+      <!-- ايه اللي بحبه فيكي -->
+      <div class="glass-card">
+        <div style="text-align:center; font-size:1.8rem; font-weight:900; color:#ffb3c6;">عارفة أنا بحب فيكي إيه؟ ❤️</div>
+        <div class="cards-grid">
+          <div class="card-item">❤️ ضحكتك.</div><div class="card-item">💕 طريقتك في الكلام.</div>
+          <div class="card-item">🌹 تفاصيلك الصغيرة.</div><div class="card-item">✨ وجودك في يومي.</div>
+          <div class="card-item">🥰 اهتمامك.</div><div class="card-item">❤️ صوتك.</div>
+          <div class="card-item">🌙 كلامنا وقت الهدوء.</div><div class="card-item">💖 الطريقة اللي بتفرحي بيها بالحاجات البسيطة.</div>
+          <div class="card-item">🥹 ذكرياتنا.</div><div class="card-item">🌸 كل حاجة بتخليكي دنيا.</div>
+          <div class="card-item">💗 ابتسامتك.</div><div class="card-item">✨ صراحتك.</div>
+          <div class="card-item">🌹 حنانك.</div><div class="card-item">💕 احساسك.</div>
+        </div>
+      </div>
+
+      <!-- مكانك عندي -->
+      <div class="glass-card">
+        <div style="text-align:center; font-size:1.8rem; font-weight:900; color:#ffb3c6;">لو تعرفي مكانك عندي... ❤️</div>
+        <div class="msg-text">
+          دنيا، مكانك عندي مش مجرد مكان في القلب، ده مكان في الروح. كل تفصيلة في حياتي بقيت مرتبطة بيكي. حتى الأيام اللي مش بكون فيها كويس، مجرد فكرة وجودك بتهدي حالي. انتِ مش جزء من يومي، انتِ يومي كله. كل حاجة صغيرة بتعمليها بتفرق، كلمة، سلام، حتى صمتك. أنتِ بالنسبة لي زي النور في وسط زحمة الدنيا.
+        </div>
+      </div>
+
+      <!-- لو زعلتك -->
+      <div class="glass-card">
+        <div style="text-align:center; font-size:1.8rem; font-weight:900; color:#ffb3c6;">ولو في يوم زعلتك من غير قصد...</div>
+        <div class="msg-text">
+          يا دنيا، أنا مش كامل، وبغلط زي أي بني آدم. لكن لو في يوم خذلتك أو قلت حاجة جرحتك، اعرفي إن دا مش أنا. أنا هنا عشان أرضيكي مش أزعلك. لو حصل، سامحيني، وخلينا دايمًا نفتكر إن الحب أكبر من أي موقف. أنا بحبك، ولو زعلتك، زعلي أنا أكتر.
+        </div>
+      </div>
+
+      <!-- المستقبل -->
+      <div class="glass-card">
+        <div style="text-align:center; font-size:1.8rem; font-weight:900; color:#ffb3c6;">نفسي في مستقبل جميل معاكي ❤️</div>
+        <div class="msg-text">
+          نفسي الأيام تعدي ونفضل نفتكر بدايتنا ونضحك على كل موقف حصل بينا. نفسي يكون عندنا ذكريات كتير، وكل فترة نفتكر حاجة ونقول فاكرة اليوم ده؟<br>
+          نفسي في التفاصيل الصغيرة قبل الكبيرة، في الكلام الحلو، والضحك، والسؤال عن بعض، والاهتمام، وإن كل واحد فينا يفضل مصدر أمان وراحة للتاني. نفسي نفضل مع بعض، ونبني حاجات بسيطة لكنها ممتدة.
+        </div>
+      </div>
+
+      <!-- الصور -->
+      <div class="glass-card">
+        <div style="text-align:center; font-size:1.8rem; font-weight:900; color:#ffb3c6;">أنا وإنتِ... أحلى حكاية ❤️</div>
+        <div class="photo-frame">
+          <div style="display:flex; flex-direction:column; align-items:center;">
+            <img src="https://i.ibb.co/S4Gq7cs0/ahmed.jpg" alt="أحمد" class="photo-item" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%232a1212%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2220%22 y=%2255%22 font-size=%2230%22 fill=%22%23ff4d6d%22 font-family=%22Arial%22%3Eأحمد%3C/text%3E%3C/svg%3E'">
+            <span style="margin-top:6px; color:#ffb3c6; font-weight:700;">أحمد ❤️</span>
+          </div>
+          <span class="heart-between">❤️</span>
+          <div style="display:flex; flex-direction:column; align-items:center;">
+            <img src="https://i.ibb.co/QFVhQBk8/dunia.jpg" alt="دنيا" class="photo-item" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%232a1212%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2220%22 y=%2255%22 font-size=%2230%22 fill=%22%23ff4d6d%22 font-family=%22Arial%22%3Eدنيا%3C/text%3E%3C/svg%3E'">
+            <span style="margin-top:6px; color:#ffb3c6; font-weight:700;">دنيا ❤️</span>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:10px; font-size:1rem; color:#ffb3b3;">صورتين... شخصين... وقلب واحد مليان حكايات ❤️</div>
+      </div>
+
+      <!-- 100 سبب -->
+      <div class="glass-card">
+        <div style="text-align:center; font-size:1.8rem; font-weight:900; color:#ffb3c6;">100 سبب وسبب ليه دنيا غالية عند أحمد ❤️</div>
+        <div class="cards-grid" id="reasonsList"></div>
+      </div>
+
+      <!-- قبل ما تقفلي -->
+      <div class="glass-card">
+        <div style="text-align:center; font-size:1.8rem; font-weight:900; color:#ffb3c6;">قبل ما تقفلي الموقع... ❤️</div>
+        <div class="msg-text">
+          دنيا، لو وصلتي لحد هنا، فأنا عايزك تعرفي إن كل جزء في الموقع ده اتعمل عشانك. كل قلب متحرك، كل كلمة، كل صورة، وكل لحظة في الموقع وراها فكرة واحدة: إني عايز أقولك قد إيه إنتِ غالية عندي.<br><br>
+          أنتِ الأمان، والضحكة، والدفا. أنتِ الحاجة الحلوة اللي بتمنها. بحبك أكتر مما تقدر تتخيلي، ودايمًا هفضل فاكر إني عملت الموقع ده عشان شخص واحد يستحق كل الحب.
+        </div>
+      </div>
+
+      <!-- السرير -->
+      <button class="secret-btn" id="secretBtn">دنيا... لسه في حاجة أخيرة ❤️</button>
+      <div class="secret-message" id="secretMessage">
+        <i class="fas fa-heart" style="color:#ff4d6d; font-size:2rem;"></i><br>
+        لو وصلتي للرسالة دي، فاعرفي إنك وصلتي لآخر الموقع، لكن مش لآخر الكلام.<br>
+        لأن مهما كتبت، هيفضل جوايا كلام أكتر.<br><br>
+        دنيا ❤️<br>
+        يمكن الموقع مجرد HTML وشوية صور وقلوب وأغنية...<br>
+        لكن بالنسبة لي هو ذكرى صغيرة عملتها بإيدي عشان شخص غالي اسمه دنيا.<br>
+        أتمنى كل مرة تشوفي الكلام ده تفتكري إن في أحمد كان وقتها بيفكر فيكي وهو بيكتب كل كلمة.<br>
+        خليكي دايمًا مبسوطة، وخلي ضحكتك موجودة، ومتخليش أي حاجة تخليكي تنسي قد إيه إنتِ شخص جميل.<br>
+        بحبك يا دنيا ❤️🌹<br>
+        — أحمد
+      </div>
+    </div>
+  </div>
+
+  <!-- Music bar -->
+  <div class="music-bar" id="musicBar">
+    <i class="fas fa-play" id="playBtn"></i>
+    <span class="track-name">🎵 love-song</span>
+    <input type="range" id="progressBar" value="0" step="0.01" min="0" max="1">
+    <i class="fas fa-volume-up" id="muteBtn"></i>
+  </div>
+</div>
+
+<script>
+  (function(){
+    // Floating hearts
+    const container = document.getElementById('floatingHearts');
+    for (let i=0; i<20; i++) {
+      const el = document.createElement('div');
+      el.className = 'heart-particle';
+      el.innerHTML = ['❤️','💕','💖','💗','♥️'][Math.floor(Math.random()*5)];
+      el.style.left = Math.random()*100+'%';
+      el.style.fontSize = (12+Math.random()*25)+'px';
+      el.style.animationDuration = (6+Math.random()*10)+'s';
+      el.style.animationDelay = (Math.random()*8)+'s';
+      container.appendChild(el);
+    }
+
+    // DOM refs
+    const welcomePage = document.getElementById('welcomePage');
+    const hiddenContent = document.getElementById('hiddenContent');
+    const openBtn = document.getElementById('openBtn');
+    const musicBar = document.getElementById('musicBar');
+    const playBtn = document.getElementById('playBtn');
+    const progressBar = document.getElementById('progressBar');
+    const muteBtn = document.getElementById('muteBtn');
+    const secretBtn = document.getElementById('secretBtn');
+    const secretMsg = document.getElementById('secretMessage');
+
+    // Audio
+    const audio = new Audio('https://cdn.imageurlgenerator.com/uploads/b07d0988-285d-4774-acfe-fda2070b2caf.m4a');
+    audio.loop = true;
+    audio.volume = 0.5;
+    let isPlaying = false;
+    let isMuted = false;
+
+    // 100 reasons
+    const reasons = [
+      "لأنك دنيا ❤️","لأن وجودك بيفرق.","لأن ضحكتك بتفرحني.","لأن كلامك له معنى.",
+      "لأنك بتخليني أبتسم.","لأن تفاصيلك مختلفة.","لأنك قريبة من قلبي.","لأنك بتفرحي من أبسط الحاجات.",
+      "لأنك شخص مميز.","لأن مجرد اسمك بيخليني أبتسم.","لأنك بتحبي الخير.","لأنك صادقة.",
+      "لأن عندك روح جميلة.","لأنك بتسمعي.","لأنك فاهمة.","لأنك بتدعميني.",
+      "لأن ضحكتك بتونس.","لأن وجودك أمان.","لأنك مش بتتغيري.","لأنك وفية.",
+      "لأنك بتفكري في غيرك.","لأنك لطيفة.","لأنك حنونة.","لأنك قوية.",
+      "لأنك مبتسمة.","لأنك متفائلة.","لأنك بتعرفي تفرحي.","لأنك بتعرفي تحسي.",
+      "لأنك دنيا.. وكفاية.", "لأنك نور.", "لأنك السلام.", "لأنك الحنية.",
+      "لأنك الأمان.", "لأنك البسمة.", "لأنك الدفا.", "لأنك السند.",
+      "لأنك الحلم.", "لأنك الواقع الحلو.", "لأنك الذكرى.", "لأنك المستقبل.",
+      "لأنك الصديقة.", "لأنك الحبيبة.", "لأنك الغالية.", "لأنك المميزة.",
+      "لأنك مش زي أي حد.", "لأنك بتخليني أكون أفضل.", "لأنك بتعلميني.", "لأنك بتساعديني.",
+      "لأنك بتضحكي.", "لأنك بتعيطي.", "لأنك إنسانة.", "لأنك صريحة.",
+      "لأنك طيبة.", "لأنك قلبها كبير.", "لأنك بتعطي.", "لأنك بتسامحي.",
+      "لأنك بتحبي.", "لأنك بتتهاني.", "لأنك بتشاركي.", "لأنك فاهمة.",
+      "لأنك بتستمعي.", "لأنك عاقلة.", "لأنك ذكية.", "لأنك جميلة.",
+      "لأنك رقيقة.", "لأنك قوية.", "لأنك صبورة.", "لأنك مش بتستسلمي.",
+      "لأنك بتكملي.", "لأنك بتشجعي.", "لأنك بتفكري.", "لأنك بتخططي.",
+      "لأنك بتنجزي.", "لأنك بتتحدي.", "لأنك بتكبر.", "لأنك بتتعلمي.",
+      "لأنك بتشاركي.", "لأنك بتحبي.", "لأنك بتعيشي.", "لأنك بتحلمي.",
+      "لأنك بتصدقي.", "لأنك بتثقي.", "لأنك بتأملي.", "لأنك بتفرحي.",
+      "لأنك بتزعلي.", "لأنك إنسانة.", "لأنك دنيا.", "لأنك كل حاجة.",
+      "لأنك مميزة.", "لأنك مختلفة.", "لأنك فريدة.", "لأنك غالية.",
+      "لأنك الثمينة.", "لأنك النادرة.", "لأنك الحب.", "لأنك العمر.",
+      "لأنك الذكريات.", "لأنك الأيام الحلوة.", "لأنك كل لحظة.", "لأنك سبب سعادتي.",
+      "لأنك أنتِ.", "لأنك دنيا ❤️", "لأنك أحلى هدية.", "لأنك كل شيء."
+    ];
+    const list = document.getElementById('reasonsList');
+    reasons.slice(0,100).forEach((r,idx) => {
+      const div = document.createElement('div');
+      div.className = 'card-item';
+      div.textContent = (idx+1)+'. '+r;
+      list.appendChild(div);
+    });
+
+    // Open button - shows content and plays music
+    openBtn.addEventListener('click', function() {
+      // Hide welcome, show content
+      welcomePage.style.display = 'none';
+      hiddenContent.classList.add('active');
+      musicBar.classList.add('show');
+
+      // Play audio
+      audio.play().then(() => {
+        isPlaying = true;
+        playBtn.className = 'fas fa-pause';
+      }).catch(() => {});
+
+      // Confetti hearts
+      for (let i=0; i<40; i++) {
+        setTimeout(()=>{
+          const heart = document.createElement('div');
+          heart.className = 'confetti-heart';
+          heart.innerHTML = ['❤️','💕','💖','♥️','💗'][Math.floor(Math.random()*5)];
+          heart.style.left = (5+Math.random()*90)+'%';
+          heart.style.top = '-10%';
+          heart.style.fontSize = (20+Math.random()*40)+'px';
+          document.body.appendChild(heart);
+          setTimeout(()=> heart.remove(), 2200);
+        }, i*100);
+      }
+    });
+
+    // Update progress
+    audio.addEventListener('timeupdate', ()=>{
+      if (audio.duration) {
+        progressBar.value = audio.currentTime / audio.duration;
+      }
+    });
+
+    // Music controls
+    playBtn.addEventListener('click', function() {
+      if (isPlaying) {
+        audio.pause();
+        playBtn.className = 'fas fa-play';
+        isPlaying = false;
+      } else {
+        audio.play().catch(function(){});
+        playBtn.className = 'fas fa-pause';
+        isPlaying = true;
+      }
+    });
+
+    progressBar.addEventListener('input', function() {
+      if (audio.duration) {
+        audio.currentTime = progressBar.value * audio.duration;
+      }
+    });
+
+    muteBtn.addEventListener('click', function() {
+      isMuted = !isMuted;
+      audio.volume = isMuted ? 0 : 0.5;
+      muteBtn.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+    });
+
+    // Secret button
+    secretBtn.addEventListener('click', function() {
+      if (secretMsg.classList.contains('show')) {
+        secretMsg.classList.remove('show');
+        secretMsg.style.display = 'none';
+      } else {
+        secretMsg.style.display = 'block';
+        secretMsg.classList.add('show');
+        for (let i=0; i<30; i++) {
+          setTimeout(()=>{
+            const h = document.createElement('div');
+            h.className = 'confetti-heart';
+            h.innerHTML = ['❤️','💕','🌟','💖','✨'][Math.floor(Math.random()*5)];
+            h.style.left = (5+Math.random()*90)+'%';
+            h.style.top = (10+Math.random()*60)+'%';
+            h.style.fontSize = (25+Math.random()*45)+'px';
+            document.body.appendChild(h);
+            setTimeout(()=> h.remove(), 2200);
+          }, i*100);
+        }
+      }
+    });
+
+  })();
+</script>
+</body>
+</html>
